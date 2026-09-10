@@ -22,11 +22,13 @@
 
 ## What This Does
 
-<!-- Three or four sentences. Which corpus you picked, and the kinds of
-     questions your system answers. Write it for someone who has never seen
-     this repo.
-
-     Milestone 5. -->
+The Unofficial Guide is a retrieval-based question-answering system built using
+the `campus_life` corpus. It searches short student posts about topics such as
+courses, housing, dining, campus services, and administrative policies. When a
+user asks a question, the system retrieves relevant chunks from the corpus and
+uses them to generate an answer grounded in those documents. It also names its
+sources and refuses to answer when the retrieved information is not relevant
+enough.
 
 ## Chunking Strategy
 
@@ -126,18 +128,19 @@ groups, and 0.6 falls comfortably inside that gap.
 
 ## How I Used AI
 
-<!-- Two specific moments. For each: what you asked for, what came back, and
-     what you changed about it.
+**1.** I used ChatGPT to help me design a chunking strategy after examining the
+short documents in the `campus_life` corpus. It suggested grouping complete
+paragraphs up to a character limit instead of using the starter's fixed
+character windows. I used that approach with a 400-character limit and no
+overlap, then indexed the corpus and inspected the resulting chunks to make
+sure they contained complete thoughts.
 
-     "I asked Claude to write the chunking function from my notes. It ignored
-     the overlap, so I added that myself" is the level of detail we're after.
-     "I used AI to help me code" is not.
-
-     Milestone 5. -->
-
-**1.**
-
-**2.**
+**2.** I used ChatGPT to help interpret the retrieval distances from my five
+in-corpus questions and five out-of-scope questions. We compared the two
+groups and found that the in-corpus distances ranged from 0.1680 to 0.3632,
+while the out-of-scope distances ranged from 0.8246 to 0.9340. Based on that
+comparison, I kept the 0.6 relevance cutoff because it falls clearly between
+the two groups.
 
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
