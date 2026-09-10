@@ -23,8 +23,10 @@ For at least 4 of my 5 test questions, the retrieved chunks include one that
 contains the answer.
 
 **Why this target:**
-<!-- e.g. "One of my questions is about a topic only two documents mention, so
-     I expect that one to be hard." -->
+I chose 4 out of 5 because the campus life documents are short and usually
+contain the useful information in one place, so retrieval should work for most
+of my questions. I left room for one question to retrieve a related document
+instead of the exact one.
 
 ---
 
@@ -33,8 +35,9 @@ contains the answer.
 Every answer the system produces names at least one source document.
 
 **Why this target:**
-<!-- Why all five and not four? What about your setup makes that achievable —
-     or what would have to go wrong for it not to be? -->
+I chose every answer because the system is supposed to give grounded answers,
+and the prompt already asks the model to name the document it used. If an
+answer does not name a source, it would be difficult for the user to verify it.
 
 ---
 
@@ -50,46 +53,38 @@ in at least 4 of 5 tries.
      just keep five of them, or the "4 of 5" above has nothing to be 4 of. -->
 
 **Why this target:**
-<!-- What did your distances look like when you set the cutoff in Milestone 4?
-     Was there a clean gap, or did the two groups overlap? -->
+I chose 4 out of 5 because the relevance gate should reject questions that are
+clearly unrelated to campus life, but embedding similarity is not perfect and
+one unrelated question could still appear similar to a document. I will use
+the distance results in Milestone 4 to choose the cutoff.
 
 ---
 
-## 4. Something about your chunks
+## 4. Chunks contain complete thoughts
 
-<!-- YOU WRITE THIS ONE.
-
-     How would you know if your chunks were the right size? Name something
-     countable or observable.
-
-     Examples of the right shape — don't copy these, they should come from
-     what you actually saw in Milestone 3:
-       - "At least 4 of 5 sampled chunks read as a complete thought, with no
-          sentence cut in half at either end."
-       - "No chunk is shorter than 200 characters, since anything below that
-          in my corpus turned out to be a heading with no content under it." -->
-
-
+At least 4 of 5 sampled chunks should contain a complete thought without
+cutting a sentence in half at the beginning or end.
 
 **Why this target:**
+The campus life documents are short and their useful information is usually
+contained in sentences or short paragraphs. I chose 4 out of 5 because I want
+most retrieved chunks to make sense on their own while allowing for one
+imperfect split.
 
 
 
 ---
 
-## 5. Your choice
+## 5. Answers contain the expected information
 
-<!-- YOU WRITE THIS ONE TOO.
-
-     Pick something you actually care about getting right. It could be about
-     speed, about refusals, about a particular kind of question your corpus
-     handles badly, about source attribution being correct rather than merely
-     present — anything, as long as it names a number or an observable
-     outcome. -->
-
-
+For at least 4 of my 5 test questions, the answer should contain the
+corresponding `expects` phrase from `questions.py`.
 
 **Why this target:**
+Each test question has a specific answer that I found in the corpus before
+testing retrieval. I chose 4 out of 5 because the system should answer most of
+these straightforward questions correctly, while allowing for one retrieval
+or generation failure.
 
 
 
