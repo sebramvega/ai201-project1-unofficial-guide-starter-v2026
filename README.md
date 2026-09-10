@@ -93,30 +93,36 @@ Laundry costs $1.75 wash, $1.75 dry, app-based. On noise: moderate; the building
 
 ## Sample Answer
 
-<!-- One complete question and answer, pasted as text, with the source line
-     visible. Milestone 4. -->
-
-**Question:**
+**Question:** What are the walk-in hours at the health centre?
 
 **Answer:**
 
 ```
+The walk-in hours at the health centre are 8am to 11am (health_center.txt).
+
+Sources retrieved: dining_the_atrium.txt, dining_the_ridgeway_cafe_followup.txt, health_center.txt, transit_shuttle.txt, transit_walking.txt
 ```
 
-**My relevance cutoff:**
+**My relevance cutoff:** 0.6
 
-<!-- The number you set in config.py, and how you got there.
-
-     You ran five questions your corpus covers and the five in OUT_OF_SCOPE
-     that it clearly doesn't, and wrote down the best distance for each. What
-     did those two groups look like? Where was the gap? Put the actual numbers
-     here — the table below wants all ten rows.
-
-     Milestone 4. -->
+I kept the relevance cutoff at 0.6 after comparing the best retrieval distances
+for five questions covered by the corpus with five questions outside the corpus.
+The in-corpus questions ranged from 0.1680 to 0.3632, while the out-of-scope
+questions ranged from 0.8246 to 0.9340. This left a large gap between the two
+groups, and 0.6 falls comfortably inside that gap.
 
 | Question | In corpus? | Best distance |
-|---|---|---|
-|  |  |  |
+|---|---|---:|
+| Is the housing lottery completely random? | Yes | 0.2514 |
+| What material are the CS 210 exams based on? | Yes | 0.3002 |
+| How long are wait times at Kestrel Commons during lunch? | Yes | 0.1680 |
+| Does Innisfree Hall have air conditioning? | Yes | 0.3632 |
+| What are the walk-in hours at the health centre? | Yes | 0.2156 |
+| What is the capital of Mongolia? | No | 0.8246 |
+| How do I change the oil in a diesel engine? | No | 0.9340 |
+| Who won the 1994 World Cup? | No | 0.8859 |
+| What is the recommended dosage of ibuprofen for a headache? | No | 0.8442 |
+| How do I write a for loop in Rust? | No | 0.8907 |
 
 ## How I Used AI
 
