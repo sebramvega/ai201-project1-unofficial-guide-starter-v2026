@@ -169,15 +169,61 @@ the two groups.
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunks contain the answer | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 4. Chunks contain complete thoughts | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 5. Answers contain the expected information | 4 of 5 | 4/5 | 4/5 | 4/5 | MET |
 
 <!-- Underneath, paste the REAL output for each criterion from one of your
      runs — the actual text your system produced, not a description of it.
      Name the file and function that produced it. -->
+
+### Evidence from the before run
+
+**Criterion 1 — Retrieved chunks contain the answer**
+
+For the health centre question, the top retrieved chunk was from `health_center.txt` and contained:
+
+> Walk-in hours are 8am to 11am; everything after that is by appointment and appointments run about a week out.
+
+Produced by `store.py::search`, using chunks from `chunker.py::split_documents`.
+
+**Criterion 2 — Every answer names a source**
+
+One generated answer was:
+
+> The walk-in hours at the health centre are 8am to 11am (health_center.txt).
+
+Produced by `generate.py::answer_from_chunks`.
+
+**Criterion 3 — Gate stops out-of-corpus questions**
+
+`run_eval.py::check_out_of_scope` tested all five out-of-corpus questions. The gate refused 5 of 5. Best distances ranged from 0.825 to 0.934 against the 0.6 cutoff.
+
+**Criterion 4 — Chunks contain complete thoughts**
+
+One sampled chunk from `course_cs_210_exams.txt` was:
+
+> CS 210 Data Structures — assessment
+>
+> Two midterms and a final, all drawn from lecture material rather than the textbook. Midterms are curved, the final is not.
+>
+> Do the labs even though they're only 10% — the exams reuse the lab problems.
+
+Produced by `chunker.py::split_documents`. All five sampled answer-bearing chunks began and ended on complete thoughts.
+
+**Criterion 5 — Answers contain the expected information**
+
+For Innisfree Hall, the expected phrase was `no air conditioning`, but all three generated answers used equivalent wording instead:
+
+> No, Innisfree Hall does not have air conditioning.
+>
+> Source: housing_innisfree_hall.txt
+
+The substring scorer therefore marked this question as a failure on all three runs. The other four questions passed, producing 4/5 on each run.
+
+Full before-run evidence is in `results/run_2026-09-18_0950_before.md`.
 
 ## Verdicts
 
@@ -190,13 +236,13 @@ the two groups.
 
      Milestone 2. -->
 
-| # | Criterion | Verdict | How I decided |
-|---|---|---|---|
-| 1 |  |  |  |
-| 2 |  |  |  |
-| 3 |  |  |  |
-| 4 |  |  |  |
-| 5 |  |  |  |
+| Criterion | Verdict | How I decided |
+|---|---|---|
+| 1 | MET | All five test questions retrieved at least one chunk containing the answer, exceeding my 4 of 5 target. |
+| 2 | MET | All five generated answers named at least one source document in all three runs. |
+| 3 | MET | The relevance gate refused all 5 out-of-corpus questions, exceeding my 4 of 5 target. |
+| 4 | MET | All five sampled answer-bearing chunks contained complete thoughts without cutting a sentence in half at either boundary. |
+| 5 | MET | The scorer produced 4/5 in all three runs, which met my target of at least 4 of 5. The Innisfree answer was semantically correct but did not contain the literal `expects` phrase. |
 
 ## Diagnoses
 
@@ -217,6 +263,12 @@ the two groups.
      low, and which one you'd tighten and to what.
 
      Milestone 3. -->
+
+I did not miss any of my five acceptance criteria, so there was no missed criterion to trace to a pipeline stage.
+
+The result that surprised me most was Criterion 5. The Innisfree Hall answer was correct in all three runs, but the scorer marked it as a failure because `questions.py` expected the literal phrase `no air conditioning` while the model answered `does not have air conditioning`. This showed a limitation of exact substring scoring even though the overall criterion still met its 4 of 5 target.
+
+Because every criterion passed, I considered whether any of my original targets were set too low. Criterion 5 is the one I would tighten in a future evaluation, from 4 of 5 to 5 of 5. I would also change how I measure it so equivalent correct wording can count instead of relying only on a literal substring.
 
 ## The Improvement
 
