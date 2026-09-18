@@ -274,10 +274,15 @@ Because every criterion passed, I considered whether any of my original targets 
 
 **What I changed:**
 
+I reduced `TOP_K` in `config.py` from 5 to 3, so the system retrieves three chunks per question instead of five.
+
 **Why I picked it:**
+
+All five acceptance criteria passed in the before run, so there was no failed criterion to repair. However, inspecting the retrieval results showed that the system often returned extra unrelated chunks along with the answer-bearing chunk. Before making the change, I tested retrieval with `top-k 3` and found that an answer-bearing chunk was still retrieved for all five test questions. I therefore reduced `TOP_K` to test whether the system could preserve its results while sending less unnecessary context to the model.
 
 <!-- Connect it to a specific diagnosis above in one sentence. If you can't,
      you picked a fix because it sounded impressive. -->
+
 
 ### Run Log — After
 
@@ -286,11 +291,11 @@ Because every criterion passed, I considered whether any of my original targets 
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunks contain the answer | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 4. Chunks contain complete thoughts | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 5. Answers contain the expected information | 4 of 5 | 4/5 | 4/5 | 4/5 | MET |
 
 **Did it help?**
 
@@ -300,6 +305,14 @@ Because every criterion passed, I considered whether any of my original targets 
      tell.
 
      Milestone 4. -->
+
+### Before and after
+
+Reducing `TOP_K` from 5 to 3 preserved the verdict on all five acceptance criteria. Criterion 5 remained at 4/5 in each run because the Innisfree Hall answers again used `does not have air conditioning` instead of the literal `expects` phrase `no air conditioning`.
+
+The change did reduce the amount of context sent to the model. The before evaluation used 9,096 input tokens and 9,761 total tokens. The after evaluation used 6,180 input tokens and 6,853 total tokens. That is a reduction of 2,916 input tokens, or about 32.1%, while preserving the same acceptance-criterion results.
+
+Full after-run evidence is in `results/run_2026-09-18_1006_after.md`.
 
 ## What's Still Broken
 
@@ -311,9 +324,19 @@ Because every criterion passed, I considered whether any of my original targets 
 
      Milestone 5. -->
 
+No acceptance criterion was still missed after the improvement.
+
+There are still limitations that the current criteria do not fully capture. Retrieval still includes some unrelated chunks even with `TOP_K = 3`; for example, the health centre question also retrieved a transit document and a dining document. Criterion 1 only checks whether an answer-bearing chunk is present, not how much irrelevant context is retrieved.
+
+The other limitation is the literal substring scorer. The Innisfree Hall answer was correct in all three before and after runs, but it failed the automated check because `does not have air conditioning` does not literally contain `no air conditioning`. I stopped after the single `TOP_K` change because the assignment calls for one system improvement, and changing the scorer would be a separate evaluation change rather than the system change being measured.
+
 ## What I'd Do Differently
 
 <!-- Knowing what you know now — which of your five criteria would you write
      differently, and why?
 
      Milestone 5. -->
+
+I would write Criterion 5 differently. Requiring the literal `expects` phrase made the measurement repeatable, but the Innisfree Hall result showed that it can mark a semantically correct answer as wrong simply because the model uses different wording.
+
+Knowing that now, I would define correctness around the expected fact rather than one exact phrase and specify a repeatable way to judge equivalent wording. I would also consider adding a retrieval-precision criterion, because the current retrieval criterion only checks whether the answer is somewhere in the retrieved chunks and does not penalize unnecessary unrelated context.
